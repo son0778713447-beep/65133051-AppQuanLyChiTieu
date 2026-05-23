@@ -19,6 +19,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // THÊM ĐOẠN NÀY ĐỂ TẢI THƯ VIỆN BIỂU ĐỒ MPANDROIDCHART
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

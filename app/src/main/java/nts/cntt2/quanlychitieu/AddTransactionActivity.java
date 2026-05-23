@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import android.content.Intent;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AddTransactionActivity extends AppCompatActivity {
     private RadioGroup rgType;
@@ -85,6 +87,45 @@ public class AddTransactionActivity extends AppCompatActivity {
                 Toast.makeText(this, "Nạp tiền thành công!", Toast.LENGTH_SHORT).show();
                 finish();
             }
+        });
+        btnSave = findViewById(R.id.btnSave);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
+
+        bottomNavigation.setSelectedItemId(R.id.nav_add);
+
+        bottomNavigation.setOnItemSelectedListener(item -> {
+
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) {
+
+                Intent intent = new Intent(AddTransactionActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+
+            } else if (id == R.id.nav_add) {
+
+                return true;
+
+            } else if (id == R.id.nav_calendar) {
+
+                Intent intent = new Intent(AddTransactionActivity.this, MainActivity.class);
+                intent.putExtra("open_calendar", true);
+                startActivity(intent);
+                finish();
+                return true;
+
+            } else if (id == R.id.nav_report) {
+
+                Intent intent = new Intent(AddTransactionActivity.this, MainActivity.class);
+                intent.putExtra("open_report", true);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+
+            return false;
         });
     }
 }

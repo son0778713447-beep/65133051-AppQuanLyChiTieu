@@ -1,142 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F7FA">
 
+    <!-- ================= MAIN CONTENT ================= -->
+
     <LinearLayout
-        android:id="@+id/llHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/lnMainContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:padding="20dp"
-        android:background="@android:color/white">
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- HEADER -->
+
+        <LinearLayout
+            android:id="@+id/llHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@android:color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ví Chi Tiêu"
+                android:textSize="16sp"
+                android:textColor="#757575"
+                android:fontFamily="sans-serif-medium"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quản Lý Tài Chính"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <!-- CARD WALLET -->
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardWallet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#2E7D32">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TỔNG SỐ DƯ HIỆN TẠI"
+                    android:textColor="#E0F2F1"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tvBalance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Số dư: 0 VND"
+                    android:textColor="@android:color/white"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <ProgressBar
+                    android:id="@+id/pbBudget"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="14dp"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressTint="#DEFF9A"
+                    android:progressBackgroundTint="#4CAF50"/>
+
+                <TextView
+                    android:id="@+id/tvBudgetDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Hạn mức tháng: 0 VND (Bấm để cài đặt)"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:textStyle="italic"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:id="@+id/tvBudgetStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="#33FFFFFF"
+                    android:padding="10dp"
+                    android:text="Ngân sách tháng trong trạng thái an toàn."
+                    android:textColor="@android:color/white"
+                    android:textSize="13sp"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- TITLE -->
 
         <TextView
+            android:id="@+id/tvHistoryTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ví Chi Tiêu"
-            android:textSize="16sp"
-            android:textColor="#757575"
-            android:fontFamily="sans-serif-medium"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quản Lý Tài Chính"
-            android:textSize="22sp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="8dp"
+            android:text="Lịch sử giao dịch"
+            android:textSize="17sp"
             android:textStyle="bold"
-            android:textColor="#1A237E"
-            android:layout_marginTop="2dp"/>
+            android:textColor="#424242"/>
+
+        <!-- RECYCLERVIEW -->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTransactions"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="16dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"/>
+
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardWallet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/llHeader"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        app:cardBackgroundColor="#2E7D32">
+    <!-- ================= CALENDAR VIEW ================= -->
+
+    <LinearLayout
+        android:id="@+id/layoutCalendarView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="#F5F7FA"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:elevation="4dp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvSelectedDateTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginVertical="8dp"
+            android:text="Giao dịch trong ngày"
+            android:textStyle="bold"
+            android:textColor="#424242"
+            android:textSize="15sp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCalendarTransactions"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="16dp"/>
+    </LinearLayout>
+
+    <!-- ================= REPORT VIEW ================= -->
+
+    <LinearLayout
+        android:id="@+id/layoutReportView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:background="#F5F7FA"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phân Tích Thu Chi"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1A237E"
+            android:layout_marginBottom="16dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginBottom="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btnReportExpense"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="TỔNG SỐ DƯ HIỆN TẠI"
-                android:textColor="#E0F2F1"
-                android:textSize="12sp"
-                android:letterSpacing="0.1"
-                android:textStyle="bold"/>
+                android:layout_weight="1"
+                android:text="Khoản Chi"
+                android:backgroundTint="#C62828"
+                android:layout_marginEnd="4dp"/>
 
-            <TextView
-                android:id="@+id/tvBalance"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btnReportIncome"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Số dư: 0 VND"
-                android:textColor="@android:color/white"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"/>
+                android:layout_weight="1"
+                android:text="Khoản Thu"
+                android:backgroundTint="#2E7D32"
+                android:layout_marginStart="4dp"/>
 
-            <ProgressBar
-                android:id="@+id/pbBudget"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:max="100"
-                android:progress="0"
-                android:progressTint="#DEFF9A" />
-
-            <TextView
-                android:id="@+id/tvBudgetDisplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Hạn mức tháng: 0 VND (Bấm để cài đặt)"
-                android:textColor="#FFFFFF"
-                android:textSize="13sp"
-                android:textStyle="italic"
-                android:clickable="true"
-                android:focusable="true"/>
-
-            <TextView
-                android:id="@+id/tvBudgetStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="#33FFFFFF"
-                android:padding="8dp"
-                android:text="Ngân sách tháng trong trạng thái an toàn."
-                android:textColor="@android:color/white"
-                android:textSize="13sp"
-                android:gravity="center"
-                android:lineSpacingExtra="2dp"/>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/tvHistoryTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cardWallet"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Lịch sử giao dịch"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#424242"/>
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTransactions"
+    </LinearLayout>
+
+    <!-- ================= BOTTOM NAVIGATION ================= -->
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tvHistoryTitle"
-        android:layout_marginHorizontal="16dp"
-        android:paddingBottom="80dp"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAdd"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="24dp"
-        android:contentDescription="Thêm thu chi"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:backgroundTint="#1A237E"
-        app:tint="@android:color/white"
-        app:fabSize="normal"/>
+        android:background="@android:color/white"
+        android:minHeight="60dp"
 
-</RelativeLayout>
+        app:elevation="12dp"
+
+        app:itemIconTint="#1A237E"
+        app:itemTextColor="#1A237E"
+
+        app:itemIconSize="22dp"
+
+        app:itemPaddingTop="2dp"
+        app:itemPaddingBottom="2dp"
+
+        app:labelVisibilityMode="labeled"
+
+        app:menu="@menu/bottom_nav_menu"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
