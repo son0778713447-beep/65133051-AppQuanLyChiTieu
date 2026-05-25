@@ -198,7 +198,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:padding="16dp"
         android:visibility="gone"
         android:background="#F5F7FA"
         app:layout_constraintTop_toTopOf="parent"
@@ -206,47 +205,287 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Phân Tích Thu Chi"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#1A237E"
-            android:layout_marginBottom="16dp"/>
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginBottom="16dp">
+            android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btnReportExpense"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Khoản Chi"
-                android:backgroundTint="#C62828"
-                android:layout_marginEnd="4dp"/>
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <Button
-                android:id="@+id/btnReportIncome"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Khoản Thu"
-                android:backgroundTint="#2E7D32"
-                android:layout_marginStart="4dp"/>
+                <!-- ===== TOGGLE: HÀNG THÁNG / HÀNG NĂM ===== -->
 
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@android:color/white"
+                    android:padding="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:elevation="2dp">
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pieChart"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/btnMonthlyTab"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Hàng tháng"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="4dp"
+                        android:backgroundTint="#1A237E"/>
+
+                    <Button
+                        android:id="@+id/btnYearlyTab"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Hàng năm"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="4dp"
+                        android:backgroundTint="#9E9E9E"/>
+
+                </LinearLayout>
+
+                <!-- ===== DATE SELECTOR ===== -->
+
+                <LinearLayout
+                    android:id="@+id/layoutDateSelector"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@android:color/white"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:elevation="2dp">
+
+                    <ImageButton
+                        android:id="@+id/btnPrevPeriod"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_media_previous"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="center"
+                        android:contentDescription="Kỳ trước"/>
+
+                    <TextView
+                        android:id="@+id/tvPeriodDisplay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Tháng 05/2026"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A237E"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <ImageButton
+                        android:id="@+id/btnNextPeriod"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@android:drawable/ic_media_next"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="center"
+                        android:contentDescription="Kỳ sau"/>
+
+                </LinearLayout>
+
+                <!-- ===== SUMMARY CARDS ===== -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/cardSummaryIncome"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/card_summary_income">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tổng Thu"
+                            android:textSize="11sp"
+                            android:textColor="#FFFFFF"
+                            android:alpha="0.8"/>
+
+                        <TextView
+                            android:id="@+id/tvTotalIncome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:layout_marginTop="4dp"
+                            android:maxLines="1"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/cardSummaryExpense"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:layout_marginHorizontal="4dp"
+                        android:background="@drawable/card_summary_expense">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tổng Chi"
+                            android:textSize="11sp"
+                            android:textColor="#FFFFFF"
+                            android:alpha="0.8"/>
+
+                        <TextView
+                            android:id="@+id/tvTotalExpense"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:layout_marginTop="4dp"
+                            android:maxLines="1"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/cardSummaryBalance"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/card_summary_balance">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chênh lệch"
+                            android:textSize="11sp"
+                            android:textColor="#FFFFFF"
+                            android:alpha="0.8"/>
+
+                        <TextView
+                            android:id="@+id/tvNetBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:layout_marginTop="4dp"
+                            android:maxLines="1"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- ===== TOGGLE: CHI TIÊU / THU NHẬP ===== -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@android:color/white"
+                    android:padding="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:elevation="2dp">
+
+                    <Button
+                        android:id="@+id/btnChartExpense"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Chi tiêu"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="4dp"
+                        android:backgroundTint="#C62828"/>
+
+                    <Button
+                        android:id="@+id/btnChartIncome"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Thu nhập"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="4dp"
+                        android:backgroundTint="#9E9E9E"/>
+
+                </LinearLayout>
+
+                <!-- ===== PIE CHART ===== -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@android:color/white"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:elevation="2dp">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChartDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp"/>
+
+                </LinearLayout>
+
+                <!-- ===== CATEGORY LIST ===== -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@android:color/white"
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp"
+                    android:elevation="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📊 DANH MỤC CHI TIẾT"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A237E"
+                        android:layout_marginBottom="8dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvCategoryStats"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 
