@@ -5,10 +5,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -35,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private CardView cardWallet;
     private ProgressBar pbBudget;
 
-    private LinearLayout lnMainContent, layoutCalendarView, layoutReportView;
+    private LinearLayout lnMainContent, layoutCalendarView, layoutReportView, layoutAddView;
     private BottomNavigationView bottomNavigation;
 
     private TransactionViewModel transactionViewModel;
@@ -48,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvCalendarTransactions;
     private TransactionAdapter calendarAdapter;
     private TextView tvSelectedDateTitle;
+
+    // Các thành phần View của form Nhập vào
+    private RadioGroup rgType;
+    private RadioButton rbIncome;
+    private EditText etAmount, etNote;
+    private AutoCompleteTextView etCategory;
+    private Button btnSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         lnMainContent = findViewById(R.id.lnMainContent);
         layoutCalendarView = findViewById(R.id.layoutCalendarView);
         layoutReportView = findViewById(R.id.layoutReportView);
+        layoutAddView = findViewById(R.id.layoutAddView);
         bottomNavigation = findViewById(R.id.bottomNavigation);
 
         // Ánh xạ các View của màn hình Lịch từ XML
@@ -157,6 +170,73 @@ public class MainActivity extends AppCompatActivity {
 
         transactionViewModel.listenToTransactions();
 
+        // Ánh xạ các View của form Nhập vào
+        rgType = findViewById(R.id.rgType);
+        rbIncome = findViewById(R.id.rbIncome);
+        etAmount = findViewById(R.id.etAmount);
+        etCategory = findViewById(R.id.etCategory);
+        etNote = findViewById(R.id.etNote);
+        btnSave = findViewById(R.id.btnSave);
+
+        // NẠP DANH MỤC VÀO MENU DROPDOWN
+        String[] categories = new String[] {"Ăn uống", "Đi lại", "Mua sắm", "Tiền học", "Giải trí", "Lương", "Khác"};
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, categories);
+        etCategory.setAdapter(categoryAdapter);
+
+        // Xử lý nút Lưu giao dịch
+        btnSave.setOnClickListener(v -> {
+            String amountStr = etAmount.getText().toString().trim();
+            String category = etCategory.getText().toString().trim();
+            String note = etNote.getText().toString().trim();
+
+            if (amountStr.isEmpty() || category.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Vui lòng nhập đầy đủ Số tiền và Danh mục!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            double amount = Double.parseDouble(amountStr);
+            String type = rbIncome.isChecked() ? "INCOME" : "EXPENSE";
+
+            if (type.equals("EXPENSE")) {
+                db.collection("users").document(uid).get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                Double totalBalance = documentSnapshot.getDouble("totalBalance");
+                                Double monthlyBudget = documentSnapshot.getDouble("monthlyBudget");
+
+                                if (totalBalance == null) totalBalance = 0.0;
+                                if (monthlyBudget == null) monthlyBudget = 0.0;
+
+                                if (amount > totalBalance) {
+                                    Toast.makeText(MainActivity.this, "Bạn không đủ số dư trong ví!", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+
+                                if (amount > monthlyBudget) {
+                                    Toast.makeText(MainActivity.this, "CẢNH BÁO: Khoản chi này vượt quá định mức tháng!", Toast.LENGTH_LONG).show();
+                                }
+
+                                transactionViewModel.addTransaction(amount, type, category, note);
+                                etAmount.setText("");
+                                etCategory.setText("");
+                                etNote.setText("");
+                                showMainWalletView();
+                                bottomNavigation.setSelectedItemId(R.id.nav_home);
+                            }
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+
+            } else {
+                transactionViewModel.addTransaction(amount, type, category, note);
+                Toast.makeText(this, "Nạp tiền thành công!", Toast.LENGTH_SHORT).show();
+                etAmount.setText("");
+                etCategory.setText("");
+                etNote.setText("");
+                showMainWalletView();
+                bottomNavigation.setSelectedItemId(R.id.nav_home);
+            }
+        });
+
         // Xử lý sự kiện click chọn ngày trên Lịch để lọc dữ liệu
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             Calendar calendar = Calendar.getInstance();
@@ -177,6 +257,13 @@ public class MainActivity extends AppCompatActivity {
             layoutReportView.setVisibility(View.VISIBLE);
             bottomNavigation.setSelectedItemId(R.id.nav_report);
         }
+        else if (getIntent().hasExtra("open_add")) {
+            layoutAddView.setVisibility(View.VISIBLE);
+            layoutCalendarView.setVisibility(View.GONE);
+            layoutReportView.setVisibility(View.GONE);
+            lnMainContent.setVisibility(View.GONE);
+            bottomNavigation.setSelectedItemId(R.id.nav_add);
+        }
         else {
             showMainWalletView();
         }
@@ -188,17 +275,21 @@ public class MainActivity extends AppCompatActivity {
                 showMainWalletView();
                 return true;
             } else if (id == R.id.nav_add) {
-                Intent intent = new Intent(MainActivity.this, AddTransactionActivity.class);
-                startActivity(intent);
-                return false;
+                lnMainContent.setVisibility(View.GONE);
+                layoutCalendarView.setVisibility(View.GONE);
+                layoutReportView.setVisibility(View.GONE);
+                layoutAddView.setVisibility(View.VISIBLE);
+                return true;
             } else if (id == R.id.nav_calendar) {
                 lnMainContent.setVisibility(View.GONE);
+                layoutAddView.setVisibility(View.GONE);
                 layoutCalendarView.setVisibility(View.VISIBLE);
                 layoutReportView.setVisibility(View.GONE);
                 loadTransactionsByDate(calendarView.getDate());
                 return true;
             } else if (id == R.id.nav_report) {
                 lnMainContent.setVisibility(View.GONE);
+                layoutAddView.setVisibility(View.GONE);
                 layoutCalendarView.setVisibility(View.GONE);
                 layoutReportView.setVisibility(View.VISIBLE);
                 return true;
@@ -238,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
         if (lnMainContent != null) lnMainContent.setVisibility(View.VISIBLE);
         if (layoutCalendarView != null) layoutCalendarView.setVisibility(View.GONE);
         if (layoutReportView != null) layoutReportView.setVisibility(View.GONE);
+        if (layoutAddView != null) layoutAddView.setVisibility(View.GONE);
     }
 
     @Override
