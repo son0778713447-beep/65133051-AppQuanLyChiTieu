@@ -10,8 +10,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.Source;
+import android.util.Log;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TransactionViewModel extends ViewModel {
@@ -28,12 +32,24 @@ public class TransactionViewModel extends ViewModel {
         if (isListenerRegistered) return;
         isListenerRegistered = true;
 
+        // BƯỚC 1: Đọc dữ liệu từ SERVER trước (bỏ qua cache)
+        // Điều này đảm bảo app luôn hiển thị dữ liệu mới nhất từ server
+        // dù cho cache local đang có dữ liệu cũ
+        refreshTransactions();
+
+        // BƯỚC 2: Đăng ký snapshot listener cho các cập nhật realtime sau này
+        // LƯU Ý: Không dùng .orderBy() để tránh lỗi thiếu composite index!
         firestoreListener = db.collection("transactions")
                 .whereEqualTo("uid", currentUserId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .addSnapshotListener((value, error) -> {
-                    if (error != null) return;
+                .addSnapshotListener(MetadataChanges.INCLUDE, (value, error) -> {
+                    if (error != null) {
+                        Log.e("FIREBASE_SNAPSHOT", "Lỗi snapshot listener: " + error.getMessage(), error);
+                        return;
+                    }
                     if (value != null) {
+                        boolean fromCache = value.getMetadata().isFromCache();
+                        Log.d("FIREBASE_SNAPSHOT", "Listener fired (fromCache=" + fromCache + "), documents=" + value.size());
+
                         List<TransactionModel> list = new ArrayList<>();
                         for (DocumentSnapshot doc : value.getDocuments()) {
                             TransactionModel model = doc.toObject(TransactionModel.class);
@@ -41,8 +57,12 @@ public class TransactionViewModel extends ViewModel {
                                 // GÁN ID VÀO ĐÂY ĐỂ TRÁNH LỖI KHI XÓA
                                 model.setTransactionId(doc.getId());
                                 list.add(model);
+                            } else {
+                                Log.w("FIREBASE_SNAPSHOT", "Không thể parse document: " + doc.getId());
                             }
                         }
+                        // Sort theo timestamp giảm dần (mới nhất lên đầu)
+                        sortTransactionsByTimestamp(list);
                         transactionList.setValue(list);
                     }
                 });
@@ -85,6 +105,7 @@ public class TransactionViewModel extends ViewModel {
                     refreshTransactions();
                 })
                 .addOnFailureListener(e -> {
+                    Log.e("FIREBASE_ADD", "Lỗi thêm giao dịch: " + e.getMessage(), e);
                     // Nếu ghi Firebase thất bại, rollback: loại bỏ giao dịch vừa thêm
                     List<TransactionModel> rollbackList = transactionList.getValue();
                     if (rollbackList != null) {
@@ -94,12 +115,16 @@ public class TransactionViewModel extends ViewModel {
                 });
     }
 
+    public void forceRefresh() {
+        refreshTransactions();
+    }
+
     private void refreshTransactions() {
         db.collection("transactions")
                 .whereEqualTo("uid", currentUserId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .get()
+                .get(Source.SERVER)
                 .addOnSuccessListener(querySnapshot -> {
+                    Log.d("FIREBASE_REFRESH", "Refresh thành công từ SERVER, documents=" + querySnapshot.size());
                     List<TransactionModel> list = new ArrayList<>();
                     for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                         TransactionModel model = doc.toObject(TransactionModel.class);
@@ -108,8 +133,27 @@ public class TransactionViewModel extends ViewModel {
                             list.add(model);
                         }
                     }
+                    // Sort theo timestamp giảm dần (mới nhất lên đầu)
+                    sortTransactionsByTimestamp(list);
                     transactionList.setValue(list);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FIREBASE_REFRESH", "Lỗi đọc từ SERVER: " + e.getMessage(), e);
                 });
+    }
+
+    // Hàm sort danh sách giao dịch theo timestamp giảm dần (mới nhất lên đầu)
+    private void sortTransactionsByTimestamp(List<TransactionModel> list) {
+        Collections.sort(list, new Comparator<TransactionModel>() {
+            @Override
+            public int compare(TransactionModel t1, TransactionModel t2) {
+                if (t1.getTimestamp() == null && t2.getTimestamp() == null) return 0;
+                if (t1.getTimestamp() == null) return 1;
+                if (t2.getTimestamp() == null) return -1;
+                // Timestamp giảm dần (mới nhất trước)
+                return t2.getTimestamp().compareTo(t1.getTimestamp());
+            }
+        });
     }
 
     public void deleteTransaction(TransactionModel transaction) {
@@ -121,6 +165,9 @@ public class TransactionViewModel extends ViewModel {
                     // Nếu xóa INCOME -> trừ tiền (vì trước đó đã cộng), Xóa EXPENSE -> cộng lại tiền
                     double refundAmount = transaction.getType().equals("INCOME") ? -transaction.getAmount() : transaction.getAmount();
                     userRef.update("totalBalance", FieldValue.increment(refundAmount));
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FIREBASE_DELETE", "Lỗi xóa giao dịch: " + e.getMessage(), e);
                 });
     }
 }

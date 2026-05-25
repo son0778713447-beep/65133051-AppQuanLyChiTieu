@@ -123,39 +123,43 @@ public class MainActivity extends AppCompatActivity {
             if (snapshot != null && snapshot.exists()) {
                 UserModel user = snapshot.toObject(UserModel.class);
                 if (user != null) {
-                    double currentBalance = user.getTotalBalance();
                     double budget = user.getMonthlyBudget();
-
-                    tvBalance.setText(String.format("%,.0f", currentBalance) + " VND");
                     tvBudgetDisplay.setText("Hạn mức tháng: " + String.format("%,.0f", budget) + " VND (Bấm để sửa)");
 
                     transactionViewModel.getTransactionList().observe(this, transactions -> {
-                        if (transactions != null && budget > 0) {
-                            double totalSpent = 0;
+                        if (transactions != null) {
+                            // Tính tổng số dư từ danh sách giao dịch: INCOME - EXPENSE
+                            double totalIncome = 0, totalExpense = 0;
                             for (TransactionModel trans : transactions) {
-                                if ("EXPENSE".equals(trans.getType())) {
-                                    totalSpent += trans.getAmount();
+                                if ("INCOME".equals(trans.getType())) {
+                                    totalIncome += trans.getAmount();
+                                } else {
+                                    totalExpense += trans.getAmount();
                                 }
                             }
+                            double calculatedBalance = totalIncome - totalExpense;
+                            tvBalance.setText(String.format("%,.0f", calculatedBalance) + " VND");
 
-                            int percent = (int) ((totalSpent / budget) * 100);
-                            pbBudget.setProgress(Math.min(percent, 100));
+                            if (budget > 0) {
+                                int percent = (int) ((totalExpense / budget) * 100);
+                                pbBudget.setProgress(Math.min(percent, 100));
 
-                            if (percent >= 100) {
-                                double overSpent = totalSpent - budget;
-                                tvBudgetStatus.setText("⚠️ Bạn đã tiêu quá hạn mức " + String.format("%,.0f", overSpent) + " VND rồi!");
-                                pbBudget.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.RED));
-                                cardWallet.setCardBackgroundColor(Color.parseColor("#D32F2F"));
+                                if (percent >= 100) {
+                                    double overSpent = totalExpense - budget;
+                                    tvBudgetStatus.setText("⚠️ Bạn đã tiêu quá hạn mức " + String.format("%,.0f", overSpent) + " VND rồi!");
+                                    pbBudget.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.RED));
+                                    cardWallet.setCardBackgroundColor(Color.parseColor("#D32F2F"));
+                                } else {
+                                    double remainingBudget = budget - totalExpense;
+                                    tvBudgetStatus.setText("☘️ Bạn còn " + String.format("%,.0f", remainingBudget) + " VND có thể chi tiêu.");
+                                    pbBudget.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#DEFF9A")));
+                                    cardWallet.setCardBackgroundColor(Color.parseColor("#2E7D32"));
+                                }
                             } else {
-                                double remainingBudget = budget - totalSpent;
-                                tvBudgetStatus.setText("☘️ Bạn còn " + String.format("%,.0f", remainingBudget) + " VND có thể chi tiêu.");
-                                pbBudget.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#DEFF9A")));
+                                pbBudget.setProgress(0);
+                                tvBudgetStatus.setText("Chưa thiết lập hạn mức chi tiêu tháng.");
                                 cardWallet.setCardBackgroundColor(Color.parseColor("#2E7D32"));
                             }
-                        } else if (budget <= 0) {
-                            pbBudget.setProgress(0);
-                            tvBudgetStatus.setText("Chưa thiết lập hạn mức chi tiêu tháng.");
-                            cardWallet.setCardBackgroundColor(Color.parseColor("#2E7D32"));
                         }
                     });
                 }
@@ -190,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         transactionViewModel.listenToTransactions();
+        // listenToTransactions() đã tự động gọi refresh từ server bên trong
 
         // Ánh xạ các View của form Nhập vào
         rgType = findViewById(R.id.rgType);
@@ -640,6 +645,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // KHÔNG gọi listenToTransactions() ở đây nữa — listener đã được đăng ký 1 lần duy nhất trong onCreate
+        // Force refresh từ server để đồng bộ dữ liệu khi quay lại app (kể cả khi sửa trên Firestore Console)
+        transactionViewModel.forceRefresh();
 
         if (bottomNavigation != null) {
             int currentTab = bottomNavigation.getSelectedItemId();
