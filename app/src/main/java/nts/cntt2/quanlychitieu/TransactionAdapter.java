@@ -7,14 +7,21 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
     private List<TransactionModel> list = new ArrayList<>();
+
+    public interface OnDeleteClickListener {
+        void onDeleteClick(TransactionModel transaction);
+    }
+
+    private OnDeleteClickListener onDeleteClickListener;
+
+    public void setOnDeleteClickListener(OnDeleteClickListener listener) {
+        this.onDeleteClickListener = listener;
+    }
 
     public void setTransactions(List<TransactionModel> newList) {
         this.list = newList;
@@ -47,42 +54,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             holder.tvItemIcon.setText("💸");
         }
 
-        // Gọi hàm xóa khi bấm nút thùng rác
-        holder.btnDelete.setOnClickListener(v -> deleteTransaction(trans));
-    }
-
-    private void deleteTransaction(TransactionModel transaction) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        db.collection("transactions").document(transaction.getTransactionId())
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    // --- BƯỚC QUAN TRỌNG: XÓA TRANSACTION KHỎI LIST HIỆN TẠI VÀ UPDATE GIAO DIỆN ---
-                    int position = list.indexOf(transaction);
-                    if (position != -1) {
-                        list.remove(position);
-                        notifyItemRemoved(position); // Lệnh này giúp dòng giao dịch biến mất ngay lập tức với hiệu ứng mượt mà
-                    }
-
-                    // Cập nhật lại số dư ví (TotalBalance)
-                    com.google.firebase.firestore.DocumentReference userRef = db.collection("users").document(uid);
-                    userRef.get().addOnSuccessListener(doc -> {
-                        Double currentBalance = doc.getDouble("totalBalance");
-                        if (currentBalance == null) currentBalance = 0.0;
-
-                        double newBalance;
-                        if ("INCOME".equals(transaction.getType())) {
-                            newBalance = currentBalance - transaction.getAmount();
-                        } else {
-                            newBalance = currentBalance + transaction.getAmount();
-                        }
-                        userRef.update("totalBalance", newBalance);
-                    });
-                })
-                .addOnFailureListener(e -> {
-                    android.util.Log.e("DELETE_ERROR", "Lỗi xóa giao dịch: " + e.getMessage());
-                });
+        holder.btnDelete.setOnClickListener(v -> {
+            if (onDeleteClickListener != null) {
+                onDeleteClickListener.onDeleteClick(trans);
+            }
+        });
     }
 
     @Override

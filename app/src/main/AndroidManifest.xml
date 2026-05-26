@@ -19,10 +19,6 @@
             android:exported="false" />
 
         <activity
-            android:name="nts.cntt2.quanlychitieu.AddTransactionActivity"
-            android:exported="false" />
-
-        <activity
             android:name="nts.cntt2.quanlychitieu.LoginActivity"
             android:exported="true">
             <intent-filter>
