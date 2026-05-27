@@ -16,14 +16,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="Nhập Vào"
-            android:textColor="#757575"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="Thêm Giao Dịch Mới"
             android:textColor="#1A237E"
