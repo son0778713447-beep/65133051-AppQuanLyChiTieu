@@ -7,7 +7,7 @@ project xây dựng app quản lý chi tiêu
 <img width="506" height="881" alt="image" src="https://github.com/user-attachments/assets/373640fb-055c-499b-828c-16adc2f9d122" />
 
 3. Giao diện màn hình chính
-<img width="584" height="879" alt="image" src="https://github.com/user-attachments/assets/6179e7a8-3ec1-4bd6-811f-0e64232926a7" />
+<img width="461" height="834" alt="image" src="https://github.com/user-attachments/assets/65bc2ef2-cf73-47b0-a722-790863c4ffaa" />
 
 4. Giao diện thêm giao dịch
 <img width="465" height="827" alt="image" src="https://github.com/user-attachments/assets/98d8d635-0d56-4aa9-b1e2-f3815bbd5ef5" />
