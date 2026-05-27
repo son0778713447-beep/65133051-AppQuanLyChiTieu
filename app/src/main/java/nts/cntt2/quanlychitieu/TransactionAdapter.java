@@ -7,8 +7,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
     private List<TransactionModel> list = new ArrayList<>();
@@ -42,6 +45,13 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.tvItemCategory.setText(trans.getCategory());
         holder.tvItemNote.setText(trans.getNote());
 
+        if (trans.getTimestamp() != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            holder.tvItemDate.setText(sdf.format(trans.getTimestamp().toDate()));
+        } else {
+            holder.tvItemDate.setText("");
+        }
+
         String formattedAmount = String.format("%,.0f", trans.getAmount()) + " VND";
 
         if ("INCOME".equals(trans.getType())) {
@@ -67,7 +77,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     }
 
     static class TransactionViewHolder extends RecyclerView.ViewHolder {
-        TextView tvItemIcon, tvItemCategory, tvItemNote, tvItemAmount;
+        TextView tvItemIcon, tvItemCategory, tvItemNote, tvItemDate, tvItemAmount;
         ImageButton btnDelete;
 
         public TransactionViewHolder(@NonNull View itemView) {
@@ -75,6 +85,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             tvItemIcon = itemView.findViewById(R.id.tvItemIcon);
             tvItemCategory = itemView.findViewById(R.id.tvItemCategory);
             tvItemNote = itemView.findViewById(R.id.tvItemNote);
+            tvItemDate = itemView.findViewById(R.id.tvItemDate);
             tvItemAmount = itemView.findViewById(R.id.tvItemAmount);
             btnDelete = itemView.findViewById(R.id.btnDelete); // Đảm bảo trong XML có id btnDelete
         }

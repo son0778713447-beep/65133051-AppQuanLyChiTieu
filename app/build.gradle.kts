@@ -30,6 +30,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 }
 
@@ -52,4 +53,8 @@ dependencies {
 
     // Thư viện biểu đồ tròn MPAndroidChart xịn sò cho Sơn
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    
+    // Thư viện CalendarView hỗ trợ đánh dấu ngày
+    implementation("com.kizitonwose.calendar:view:2.10.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

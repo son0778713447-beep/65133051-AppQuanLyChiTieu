@@ -216,10 +216,11 @@ public class ReportFragment extends Fragment {
             }
         }
 
-        tvTotalIncome.setText(String.format("%,.0f", totalIncome) + "đ");
-        tvTotalExpense.setText(String.format("%,.0f", totalExpense) + "đ");
+        tvTotalIncome.setText("+ " + String.format("%,.0f", totalIncome) + "đ");
+        tvTotalExpense.setText("- " + String.format("%,.0f", totalExpense) + "đ");
         double netBalance = totalIncome - totalExpense;
-        tvNetBalance.setText(String.format("%,.0f", netBalance) + "đ");
+        String balanceSign = netBalance >= 0 ? "+ " : "";
+        tvNetBalance.setText(balanceSign + String.format("%,.0f", netBalance) + "đ");
 
         int[] expenseColors = {
             Color.parseColor("#E53935"), Color.parseColor("#FF7043"),

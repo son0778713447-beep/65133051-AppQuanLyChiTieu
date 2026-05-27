@@ -141,7 +141,7 @@
                         android:layout_height="wrap_content"
                         android:alpha="0.8"
                         android:text="Tổng Thu"
-                        android:textColor="#FFFFFF"
+                        android:textColor="#757575"
                         android:textSize="11sp" />
 
                     <TextView
@@ -151,7 +151,7 @@
                         android:layout_marginTop="4dp"
                         android:maxLines="1"
                         android:text="0"
-                        android:textColor="@android:color/white"
+                        android:textColor="#2E7D32"
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:alpha="0.8"
                         android:text="Tổng Chi"
-                        android:textColor="#FFFFFF"
+                        android:textColor="#757575"
                         android:textSize="11sp" />
 
                     <TextView
@@ -182,7 +182,7 @@
                         android:layout_marginTop="4dp"
                         android:maxLines="1"
                         android:text="0"
-                        android:textColor="@android:color/white"
+                        android:textColor="#C62828"
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -203,7 +203,7 @@
                         android:layout_height="wrap_content"
                         android:alpha="0.8"
                         android:text="Chênh lệch"
-                        android:textColor="#FFFFFF"
+                        android:textColor="#757575"
                         android:textSize="11sp" />
 
                     <TextView
@@ -213,7 +213,7 @@
                         android:layout_marginTop="4dp"
                         android:maxLines="1"
                         android:text="0"
-                        android:textColor="@android:color/white"
+                        android:textColor="#1A237E"
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
