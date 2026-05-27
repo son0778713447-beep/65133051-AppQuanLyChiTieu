@@ -11,25 +11,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="Ví Chi Tiêu"
-            android:textColor="#757575"
-            android:textSize="16sp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="Ví Chi Tiêu"
+                android:textColor="#757575"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Quản Lý Tài Chính"
+                android:textColor="#1A237E"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/tvLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="Quản Lý Tài Chính"
-            android:textColor="#1A237E"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:text="Đăng xuất"
+            android:textColor="#B71C1C"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <androidx.cardview.widget.CardView

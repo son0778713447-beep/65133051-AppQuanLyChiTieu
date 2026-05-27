@@ -1,6 +1,7 @@
 package nts.cntt2.quanlychitieu;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -48,6 +49,13 @@ public class WalletFragment extends Fragment {
         rvTransactions = view.findViewById(R.id.rvTransactions);
         cardWallet = view.findViewById(R.id.cardWallet);
         pbBudget = view.findViewById(R.id.pbBudget);
+
+        TextView tvLogout = view.findViewById(R.id.tvLogout);
+        tvLogout.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+            requireActivity().finishAffinity();
+        });
 
         rvTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new TransactionAdapter();
