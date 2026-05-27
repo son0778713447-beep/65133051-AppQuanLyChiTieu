@@ -45,9 +45,17 @@ public class AddFragment extends Fragment {
         etNote = view.findViewById(R.id.etNote);
         btnSave = view.findViewById(R.id.btnSave);
 
-        String[] categories = new String[] {"Ăn uống", "Đi lại", "Mua sắm", "Tiền học", "Giải trí", "Lương", "Khác"};
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, categories);
+        String[] incomeCategories = new String[] {"Lương", "Thưởng", "Đầu tư", "Làm thêm", "Được tặng", "Khác"};
+        String[] expenseCategories = new String[] {"Ăn uống", "Đi lại", "Mua sắm", "Tiền học", "Giải trí", "Sức khỏe", "Hóa đơn", "Khác"};
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, expenseCategories);
         etCategory.setAdapter(categoryAdapter);
+
+        rgType.setOnCheckedChangeListener((group, checkedId) -> {
+            String[] newCategories = (checkedId == R.id.rbIncome) ? incomeCategories : expenseCategories;
+            ArrayAdapter<String> newAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, newCategories);
+            etCategory.setAdapter(newAdapter);
+            etCategory.setText("");
+        });
 
         transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
 
