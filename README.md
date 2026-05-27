@@ -7,14 +7,13 @@ project xây dựng app quản lý chi tiêu
 <img width="506" height="881" alt="image" src="https://github.com/user-attachments/assets/373640fb-055c-499b-828c-16adc2f9d122" />
 
 3. Giao diện màn hình chính
-<img width="584" height="879" alt="image" src="https://github.com/user-attachments/assets/6179e7a8-3ec1-4bd6-811f-0e64232926a7" />
+<img width="461" height="834" alt="image" src="https://github.com/user-attachments/assets/65bc2ef2-cf73-47b0-a722-790863c4ffaa" />
 
 4. Giao diện thêm giao dịch
-<img width="489" height="888" alt="image" src="https://github.com/user-attachments/assets/5289e8fe-39fb-4769-9d59-30714c9ae759" />
+<img width="465" height="827" alt="image" src="https://github.com/user-attachments/assets/98d8d635-0d56-4aa9-b1e2-f3815bbd5ef5" />
 
-5. Giao diện xem giao dịch theo từng ngày
-<img width="661" height="872" alt="image" src="https://github.com/user-attachments/assets/81139a4c-6d2b-4293-867a-82fb1e2c1304" />
+5. Giao diện xem lịch giao dịch theo ngày
+<img width="492" height="833" alt="image" src="https://github.com/user-attachments/assets/41b63168-0057-4c17-911c-f43beb2af254" />
 
 6. Giao diện báo cáo thống kê theo tháng/năm
-<img width="647" height="879" alt="image" src="https://github.com/user-attachments/assets/337e5b09-a018-4b30-9837-f67323c61aa2" />
-
+<img width="465" height="834" alt="image" src="https://github.com/user-attachments/assets/9346dd8c-8313-4700-8b41-fd52272bcda5" />
