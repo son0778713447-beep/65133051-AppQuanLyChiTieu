@@ -1,19 +1,22 @@
 package nts.cntt2.quanlychitieu;
 
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -24,10 +27,40 @@ public class AddFragment extends Fragment {
     private RadioGroup rgType;
     private RadioButton rbIncome;
     private EditText etAmount, etNote;
-    private AutoCompleteTextView etCategory;
     private Button btnSave;
+    private GridLayout gridCategories;
     private TransactionViewModel transactionViewModel;
     private Runnable onTransactionSavedListener;
+
+    private String selectedCategory = "";
+    private View selectedCategoryView = null;
+
+    private static class CategoryItem {
+        String name, icon, color;
+        CategoryItem(String name, String icon, String color) {
+            this.name = name; this.icon = icon; this.color = color;
+        }
+    }
+
+    private final CategoryItem[] incomeCategories = {
+        new CategoryItem("Lương", "💼", "#1565C0"),
+        new CategoryItem("Thưởng", "🏆", "#FFA000"),
+        new CategoryItem("Đầu tư", "📈", "#2E7D32"),
+        new CategoryItem("Làm thêm", "🔧", "#6A1B9A"),
+        new CategoryItem("Được tặng", "🎁", "#D81B60"),
+        new CategoryItem("Khác", "📦", "#795548"),
+    };
+
+    private final CategoryItem[] expenseCategories = {
+        new CategoryItem("Ăn uống", "🍔", "#FF5722"),
+        new CategoryItem("Đi lại", "🚗", "#2196F3"),
+        new CategoryItem("Mua sắm", "🛍️", "#E91E63"),
+        new CategoryItem("Tiền học", "📚", "#9C27B0"),
+        new CategoryItem("Giải trí", "🎮", "#FF9800"),
+        new CategoryItem("Sức khỏe", "💊", "#4CAF50"),
+        new CategoryItem("Hóa đơn", "📄", "#607D8B"),
+        new CategoryItem("Khác", "📦", "#795548"),
+    };
 
     public void setOnTransactionSavedListener(Runnable listener) {
         this.onTransactionSavedListener = listener;
@@ -41,32 +74,24 @@ public class AddFragment extends Fragment {
         rgType = view.findViewById(R.id.rgType);
         rbIncome = view.findViewById(R.id.rbIncome);
         etAmount = view.findViewById(R.id.etAmount);
-        etCategory = view.findViewById(R.id.etCategory);
         etNote = view.findViewById(R.id.etNote);
         btnSave = view.findViewById(R.id.btnSave);
+        gridCategories = view.findViewById(R.id.gridCategories);
 
-        String[] incomeCategories = new String[] {"Lương", "Thưởng", "Đầu tư", "Làm thêm", "Được tặng", "Khác"};
-        String[] expenseCategories = new String[] {"Ăn uống", "Đi lại", "Mua sắm", "Tiền học", "Giải trí", "Sức khỏe", "Hóa đơn", "Khác"};
-        String[] initialCategories = rbIncome.isChecked() ? incomeCategories : expenseCategories;
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, initialCategories);
-        etCategory.setAdapter(categoryAdapter);
+        buildCategoryGrid(rbIncome.isChecked());
 
         rgType.setOnCheckedChangeListener((group, checkedId) -> {
-            String[] newCategories = (checkedId == R.id.rbIncome) ? incomeCategories : expenseCategories;
-            ArrayAdapter<String> newAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, newCategories);
-            etCategory.setAdapter(newAdapter);
-            etCategory.setText("");
+            buildCategoryGrid(checkedId == R.id.rbIncome);
         });
 
         transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
 
         btnSave.setOnClickListener(v -> {
             String amountStr = etAmount.getText().toString().trim();
-            String category = etCategory.getText().toString().trim();
             String note = etNote.getText().toString().trim();
 
-            if (amountStr.isEmpty() || category.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập đầy đủ Số tiền và Danh mục!", Toast.LENGTH_SHORT).show();
+            if (amountStr.isEmpty() || selectedCategory.isEmpty()) {
+                Toast.makeText(getContext(), "Vui lòng nhập Số tiền và chọn Danh mục!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -94,10 +119,8 @@ public class AddFragment extends Fragment {
                                     Toast.makeText(getContext(), "CẢNH BÁO: Khoản chi này vượt quá định mức tháng!", Toast.LENGTH_LONG).show();
                                 }
 
-                                transactionViewModel.addTransaction(amount, type, category, note);
-                                etAmount.setText("");
-                                etCategory.setText("");
-                                etNote.setText("");
+                                transactionViewModel.addTransaction(amount, type, selectedCategory, note);
+                                clearForm();
                                 if (onTransactionSavedListener != null) {
                                     onTransactionSavedListener.run();
                                 }
@@ -106,11 +129,9 @@ public class AddFragment extends Fragment {
                         .addOnFailureListener(e -> Toast.makeText(getContext(), "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
             } else {
-                transactionViewModel.addTransaction(amount, type, category, note);
+                transactionViewModel.addTransaction(amount, type, selectedCategory, note);
                 Toast.makeText(getContext(), "Nạp tiền thành công!", Toast.LENGTH_SHORT).show();
-                etAmount.setText("");
-                etCategory.setText("");
-                etNote.setText("");
+                clearForm();
                 if (onTransactionSavedListener != null) {
                     onTransactionSavedListener.run();
                 }
@@ -118,5 +139,58 @@ public class AddFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void buildCategoryGrid(boolean isIncome) {
+        gridCategories.removeAllViews();
+        selectedCategory = "";
+        selectedCategoryView = null;
+
+        CategoryItem[] items = isIncome ? incomeCategories : expenseCategories;
+
+        for (CategoryItem item : items) {
+            View itemView = getLayoutInflater().inflate(R.layout.item_category_grid, gridCategories, false);
+
+            TextView tvIcon = itemView.findViewById(R.id.tvCategoryIcon);
+            TextView tvName = itemView.findViewById(R.id.tvCategoryName);
+
+            tvIcon.setText(item.icon);
+            tvName.setText(item.name);
+
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setShape(GradientDrawable.RECTANGLE);
+            drawable.setCornerRadius(12f);
+            drawable.setColor(android.graphics.Color.parseColor(item.color));
+
+            tvIcon.setBackground(drawable);
+
+            itemView.setOnClickListener(v -> {
+                if (selectedCategoryView != null) {
+                    selectedCategoryView.setAlpha(1f);
+                }
+                v.setAlpha(0.6f);
+                selectedCategoryView = v;
+                selectedCategory = item.name;
+            });
+
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+            params.width = 0;
+            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+            params.setMargins(4, 4, 4, 4);
+            itemView.setLayoutParams(params);
+
+            gridCategories.addView(itemView);
+        }
+    }
+
+    private void clearForm() {
+        etAmount.setText("");
+        etNote.setText("");
+        selectedCategory = "";
+        if (selectedCategoryView != null) {
+            selectedCategoryView.setAlpha(1f);
+            selectedCategoryView = null;
+        }
     }
 }

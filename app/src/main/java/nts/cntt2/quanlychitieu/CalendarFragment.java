@@ -25,6 +25,7 @@ public class CalendarFragment extends Fragment {
     private CalendarView calendarView;
     private RecyclerView rvCalendarTransactions;
     private TextView tvSelectedDateTitle;
+    private TextView tvDayIncome, tvDayExpense, tvDayBalance;
     private TransactionAdapter calendarAdapter;
     private TransactionViewModel transactionViewModel;
     private long selectedDateMillis;
@@ -37,6 +38,9 @@ public class CalendarFragment extends Fragment {
         calendarView = view.findViewById(R.id.calendarView);
         rvCalendarTransactions = view.findViewById(R.id.rvCalendarTransactions);
         tvSelectedDateTitle = view.findViewById(R.id.tvSelectedDateTitle);
+        tvDayIncome = view.findViewById(R.id.tvDayIncome);
+        tvDayExpense = view.findViewById(R.id.tvDayExpense);
+        tvDayBalance = view.findViewById(R.id.tvDayBalance);
 
         rvCalendarTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         calendarAdapter = new TransactionAdapter();
@@ -72,14 +76,25 @@ public class CalendarFragment extends Fragment {
         if (allTransactions == null) return;
 
         List<TransactionModel> filteredList = new ArrayList<>();
+        double totalIncome = 0, totalExpense = 0;
         for (TransactionModel trans : allTransactions) {
             if (trans.getTimestamp() != null) {
                 String transDateStr = sdf.format(trans.getTimestamp().toDate());
                 if (selectedDateStr.equals(transDateStr)) {
                     filteredList.add(trans);
+                    if ("INCOME".equals(trans.getType())) {
+                        totalIncome += trans.getAmount();
+                    } else {
+                        totalExpense += trans.getAmount();
+                    }
                 }
             }
         }
         calendarAdapter.setTransactions(filteredList);
+
+        tvDayIncome.setText(String.format("%,.0fđ", totalIncome));
+        tvDayExpense.setText(String.format("%,.0fđ", totalExpense));
+        double balance = totalIncome - totalExpense;
+        tvDayBalance.setText(String.format("%,.0fđ", balance));
     }
 }
