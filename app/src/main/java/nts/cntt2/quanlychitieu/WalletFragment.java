@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import java.util.List;
 
 public class WalletFragment extends Fragment {
     private TextView tvBalance, tvBudgetStatus, tvBudgetDisplay;
+    private Button btnEditBudget;
     private RecyclerView rvTransactions;
     private CardView cardWallet;
     private ProgressBar pbBudget;
@@ -46,6 +48,7 @@ public class WalletFragment extends Fragment {
         tvBalance = view.findViewById(R.id.tvBalance);
         tvBudgetStatus = view.findViewById(R.id.tvBudgetStatus);
         tvBudgetDisplay = view.findViewById(R.id.tvBudgetDisplay);
+        btnEditBudget = view.findViewById(R.id.btnEditBudget);
         rvTransactions = view.findViewById(R.id.rvTransactions);
         cardWallet = view.findViewById(R.id.cardWallet);
         pbBudget = view.findViewById(R.id.pbBudget);
@@ -75,12 +78,13 @@ public class WalletFragment extends Fragment {
                 UserModel user = snapshot.toObject(UserModel.class);
                 if (user != null) {
                     monthlyBudget = user.getMonthlyBudget();
-                    tvBudgetDisplay.setText("Hạn mức tháng: " + String.format("%,.0f", monthlyBudget) + " VND (Bấm để sửa)");
+                    tvBudgetDisplay.setText("Hạn mức tháng: " + String.format("%,.0f", monthlyBudget) + " VND");
+                    updateBudgetStatus();
                 }
             }
         });
 
-        tvBudgetDisplay.setOnClickListener(v -> {
+        btnEditBudget.setOnClickListener(v -> {
             EditText etLimit = new EditText(getContext());
             etLimit.setInputType(InputType.TYPE_CLASS_NUMBER);
             etLimit.setHint("Ví dụ: 3000000");
@@ -116,29 +120,43 @@ public class WalletFragment extends Fragment {
                 double calculatedBalance = totalIncome - totalExpense;
                 tvBalance.setText(String.format("%,.0f", calculatedBalance) + " VND");
 
-                if (monthlyBudget > 0) {
-                    int percent = (int) ((totalExpense / monthlyBudget) * 100);
-                    pbBudget.setProgress(Math.min(percent, 100));
-
-                    if (percent >= 100) {
-                        double overSpent = totalExpense - monthlyBudget;
-                        tvBudgetStatus.setText("⚠️ Bạn đã tiêu quá hạn mức " + String.format("%,.0f", overSpent) + " VND rồi!");
-                        pbBudget.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.RED));
-                        cardWallet.setCardBackgroundColor(Color.parseColor("#D32F2F"));
-                    } else {
-                        double remainingBudget = monthlyBudget - totalExpense;
-                        tvBudgetStatus.setText("☘️ Bạn còn " + String.format("%,.0f", remainingBudget) + " VND có thể chi tiêu.");
-                        pbBudget.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#DEFF9A")));
-                        cardWallet.setCardBackgroundColor(Color.parseColor("#2E7D32"));
-                    }
-                } else {
-                    pbBudget.setProgress(0);
-                    tvBudgetStatus.setText("Chưa thiết lập hạn mức chi tiêu tháng.");
-                    cardWallet.setCardBackgroundColor(Color.parseColor("#2E7D32"));
-                }
+                updateBudgetStatus();
             }
         });
 
         return view;
+    }
+
+    private void updateBudgetStatus() {
+        List<TransactionModel> transactions = transactionViewModel.getTransactionList().getValue();
+        if (transactions == null) return;
+
+        double totalExpense = 0;
+        for (TransactionModel trans : transactions) {
+            if (!"INCOME".equals(trans.getType())) {
+                totalExpense += trans.getAmount();
+            }
+        }
+
+        if (monthlyBudget > 0) {
+            int percent = (int) ((totalExpense / monthlyBudget) * 100);
+            pbBudget.setProgress(Math.min(percent, 100));
+
+            if (percent >= 100) {
+                double overSpent = totalExpense - monthlyBudget;
+                tvBudgetStatus.setText("⚠️ Bạn đã tiêu quá hạn mức " + String.format("%,.0f", overSpent) + " VND rồi!");
+                pbBudget.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.RED));
+                cardWallet.setCardBackgroundColor(Color.parseColor("#D32F2F"));
+            } else {
+                double remainingBudget = monthlyBudget - totalExpense;
+                tvBudgetStatus.setText("☘️ Bạn còn " + String.format("%,.0f", remainingBudget) + " VND có thể chi tiêu.");
+                pbBudget.setProgressTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#DEFF9A")));
+                cardWallet.setCardBackgroundColor(Color.parseColor("#2E7D32"));
+            }
+        } else {
+            pbBudget.setProgress(0);
+            tvBudgetStatus.setText("Chưa thiết lập hạn mức chi tiêu tháng.");
+            cardWallet.setCardBackgroundColor(Color.parseColor("#2E7D32"));
+        }
     }
 }

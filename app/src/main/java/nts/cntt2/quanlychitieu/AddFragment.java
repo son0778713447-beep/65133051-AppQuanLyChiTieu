@@ -217,8 +217,14 @@ public class AddFragment extends Fragment {
     private Timestamp parseDate(String dateStr) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            Date parsed = sdf.parse(dateStr);
-            return new Timestamp(parsed);
+            Date parsedDate = sdf.parse(dateStr);
+            Calendar cal = Calendar.getInstance();
+            Calendar dateCal = Calendar.getInstance();
+            dateCal.setTime(parsedDate);
+            cal.set(Calendar.YEAR, dateCal.get(Calendar.YEAR));
+            cal.set(Calendar.MONTH, dateCal.get(Calendar.MONTH));
+            cal.set(Calendar.DAY_OF_MONTH, dateCal.get(Calendar.DAY_OF_MONTH));
+            return new Timestamp(cal.getTime());
         } catch (Exception e) {
             return Timestamp.now();
         }

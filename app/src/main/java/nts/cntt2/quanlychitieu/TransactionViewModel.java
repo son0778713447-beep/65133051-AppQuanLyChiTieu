@@ -93,7 +93,8 @@ public class TransactionViewModel extends ViewModel {
         if (currentList != null) {
             optimisticList.addAll(currentList);
         }
-        optimisticList.add(0, transaction); // Thêm lên đầu (mới nhất)
+        optimisticList.add(transaction);
+        sortTransactionsByTimestamp(optimisticList);
         transactionList.setValue(optimisticList);
 
         // Đẩy lên Firebase (bất đồng bộ)
