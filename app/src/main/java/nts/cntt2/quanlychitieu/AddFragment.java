@@ -1,5 +1,6 @@
 package nts.cntt2.quanlychitieu;
 
+import android.app.DatePickerDialog;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.Timestamp;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -26,7 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class AddFragment extends Fragment {
     private RadioGroup rgType;
     private RadioButton rbIncome;
-    private EditText etAmount, etNote;
+    private EditText etAmount, etNote, etDate;
     private Button btnSave;
     private GridLayout gridCategories;
     private TransactionViewModel transactionViewModel;
@@ -75,7 +83,29 @@ public class AddFragment extends Fragment {
         rbIncome = view.findViewById(R.id.rbIncome);
         etAmount = view.findViewById(R.id.etAmount);
         etNote = view.findViewById(R.id.etNote);
+        etDate = view.findViewById(R.id.etDate);
         btnSave = view.findViewById(R.id.btnSave);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        etDate.setText(dateFormat.format(new Date()));
+        etDate.setOnClickListener(v -> {
+            Calendar cal = Calendar.getInstance();
+            String currentDate = etDate.getText().toString().trim();
+            if (!currentDate.isEmpty()) {
+                try {
+                    Date parsed = dateFormat.parse(currentDate);
+                    cal.setTime(parsed);
+                } catch (Exception ignored) {}
+            }
+            DatePickerDialog picker = new DatePickerDialog(getContext(),
+                    (view1, year, month, dayOfMonth) -> {
+                        Calendar selected = Calendar.getInstance();
+                        selected.set(year, month, dayOfMonth);
+                        etDate.setText(dateFormat.format(selected.getTime()));
+                    },
+                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+            picker.show();
+        });
         gridCategories = view.findViewById(R.id.gridCategories);
 
         buildCategoryGrid(rbIncome.isChecked());
@@ -119,7 +149,7 @@ public class AddFragment extends Fragment {
                                     Toast.makeText(getContext(), "CẢNH BÁO: Khoản chi này vượt quá định mức tháng!", Toast.LENGTH_LONG).show();
                                 }
 
-                                transactionViewModel.addTransaction(amount, type, selectedCategory, note);
+                                transactionViewModel.addTransaction(amount, type, selectedCategory, note, parseDate(etDate.getText().toString().trim()));
                                 clearForm();
                                 if (onTransactionSavedListener != null) {
                                     onTransactionSavedListener.run();
@@ -129,7 +159,7 @@ public class AddFragment extends Fragment {
                         .addOnFailureListener(e -> Toast.makeText(getContext(), "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
             } else {
-                transactionViewModel.addTransaction(amount, type, selectedCategory, note);
+                transactionViewModel.addTransaction(amount, type, selectedCategory, note, parseDate(etDate.getText().toString().trim()));
                 Toast.makeText(getContext(), "Nạp tiền thành công!", Toast.LENGTH_SHORT).show();
                 clearForm();
                 if (onTransactionSavedListener != null) {
@@ -184,9 +214,21 @@ public class AddFragment extends Fragment {
         }
     }
 
+    private Timestamp parseDate(String dateStr) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            Date parsed = sdf.parse(dateStr);
+            return new Timestamp(parsed);
+        } catch (Exception e) {
+            return Timestamp.now();
+        }
+    }
+
     private void clearForm() {
         etAmount.setText("");
         etNote.setText("");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        etDate.setText(dateFormat.format(new Date()));
         selectedCategory = "";
         if (selectedCategoryView != null) {
             selectedCategoryView.setAlpha(1f);

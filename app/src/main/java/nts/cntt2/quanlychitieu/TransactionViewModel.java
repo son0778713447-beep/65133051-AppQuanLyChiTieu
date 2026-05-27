@@ -76,12 +76,14 @@ public class TransactionViewModel extends ViewModel {
         }
     }
 
-    public void addTransaction(double amount, String type, String category, String note) {
+    public void addTransaction(double amount, String type, String category, String note, Timestamp timestamp) {
+        if (timestamp == null) timestamp = Timestamp.now();
+
         DocumentReference transRef = db.collection("transactions").document();
-        String docId = transRef.getId(); // Lấy ID trước khi ghi
+        String docId = transRef.getId();
 
         TransactionModel transaction = new TransactionModel(
-                currentUserId, type, amount, category, Timestamp.now(), note
+                currentUserId, type, amount, category, timestamp, note
         );
         transaction.setTransactionId(docId);
 
