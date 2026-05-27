@@ -229,10 +229,10 @@ public class ReportFragment extends Fragment {
         };
 
         int[] incomeColors = {
-            Color.parseColor("#2E7D32"), Color.parseColor("#43A047"),
-            Color.parseColor("#66BB6A"), Color.parseColor("#A5D6A7"),
-            Color.parseColor("#1B5E20"), Color.parseColor("#388E3C"),
-            Color.parseColor("#4CAF50"), Color.parseColor("#81C784")
+            Color.parseColor("#2E7D32"), Color.parseColor("#1565C0"),
+            Color.parseColor("#6A1B9A"), Color.parseColor("#00838F"),
+            Color.parseColor("#F57F17"), Color.parseColor("#4E342E"),
+            Color.parseColor("#D81B60"), Color.parseColor("#558B2F")
         };
 
         if (isShowingExpense) {
@@ -268,6 +268,7 @@ public class ReportFragment extends Fragment {
         }
 
         if (entries.isEmpty()) {
+            chart.clear();
             chart.setNoDataText(noDataText);
             chart.invalidate();
             return;

@@ -47,7 +47,8 @@ public class AddFragment extends Fragment {
 
         String[] incomeCategories = new String[] {"Lương", "Thưởng", "Đầu tư", "Làm thêm", "Được tặng", "Khác"};
         String[] expenseCategories = new String[] {"Ăn uống", "Đi lại", "Mua sắm", "Tiền học", "Giải trí", "Sức khỏe", "Hóa đơn", "Khác"};
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, expenseCategories);
+        String[] initialCategories = rbIncome.isChecked() ? incomeCategories : expenseCategories;
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, initialCategories);
         etCategory.setAdapter(categoryAdapter);
 
         rgType.setOnCheckedChangeListener((group, checkedId) -> {
