@@ -54,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:text="Ghi chú kèm theo"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:textColor="#757575"
                 android:layout_marginTop="2dp"/>
 
@@ -62,8 +63,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dd/MM/yyyy"
-                android:textSize="11sp"
-                android:textColor="#9E9E9E"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#757575"
                 android:layout_marginTop="1dp"/>
         </LinearLayout>
 
@@ -71,10 +73,10 @@
             android:id="@+id/tvItemAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 VND"
-            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:text="0 đ"
             android:textSize="15sp"
-            android:layout_gravity="center_vertical"/>
+            android:textStyle="bold" />
         <ImageButton
             android:id="@+id/btnDelete"
             android:layout_width="wrap_content"

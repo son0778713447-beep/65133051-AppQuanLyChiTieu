@@ -2,4 +2,39 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary -->
+    <color name="primary">#1A237E</color>
+    <color name="primaryDark">#0D1550</color>
+    <color name="primaryLight">#534BAE</color>
+
+    <!-- Accent for auth screens -->
+    <color name="accent">#0284C7</color>
+
+    <!-- Semantic -->
+    <color name="income">#2E7D32</color>
+    <color name="incomeLight">#E8F5E9</color>
+    <color name="expense">#C62828</color>
+    <color name="expenseLight">#FFEBEE</color>
+    <color name="warning">#DEFF9A</color>
+    <color name="danger">#D32F2F</color>
+    <color name="dangerDark">#B71C1C</color>
+
+    <!-- Text -->
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#424242</color>
+    <color name="textTertiary">#757575</color>
+    <color name="textHint">#9E9E9E</color>
+    <color name="textDisabled">#BDBDBD</color>
+
+    <!-- Background -->
+    <color name="screenBackground">#F5F7FA</color>
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="iconBackground">#F0F4F8</color>
+    <color name="toggleBackground">#EEEEEE</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="border">#BDBDBD</color>
+
+    <!-- Chart -->
+    <color name="chartValueText">#1565C0</color>
 </resources>

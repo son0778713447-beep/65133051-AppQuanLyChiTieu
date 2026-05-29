@@ -64,7 +64,7 @@ public class CategoryStatAdapter extends RecyclerView.Adapter<CategoryStatAdapte
         CategoryItem item = items.get(position);
 
         holder.tvCategoryName.setText(item.getCategoryName());
-        holder.tvCategoryAmount.setText(String.format("%,.0f VND", item.getAmount()));
+        holder.tvCategoryAmount.setText(String.format("%,.0f đ", item.getAmount()));
         holder.tvCategoryPercent.setText(String.format("%.0f%%", item.getPercentage()));
         holder.viewColorDot.setBackgroundColor(item.getColor());
 

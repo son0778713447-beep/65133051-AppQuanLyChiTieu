@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F8FAFC">
+    android:background="@color/screenBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:text="QUẢN LÝ CHI TIÊU"
             android:textSize="26sp"
             android:textStyle="bold"
-            android:textColor="#0F172A"
+            android:textColor="@color/textPrimary"
             android:letterSpacing="0.03"
             android:layout_marginBottom="8dp"/>
 
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="Đăng nhập để theo dõi tài chính của bạn"
             android:textSize="14sp"
-            android:textColor="#64748B"
+            android:textColor="@color/textTertiary"
             android:layout_marginBottom="40dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -42,9 +42,9 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             app:startIconDrawable="@android:drawable/sym_action_email"
-            app:startIconTint="#64748B"
-            app:boxStrokeColor="#0284C7"
-            app:hintTextColor="#0284C7"
+            app:startIconTint="@color/textTertiary"
+            app:boxStrokeColor="@color/primary"
+            app:hintTextColor="@color/primary"
             android:layout_marginBottom="16dp"
             app:boxCornerRadiusTopStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:textColor="#1E293B"/>
+                android:textColor="@color/textPrimary"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -65,11 +65,11 @@
             android:layout_height="wrap_content"
             android:hint="Mật khẩu"
             app:startIconDrawable="@android:drawable/ic_lock_lock"
-            app:startIconTint="#64748B"
+            app:startIconTint="@color/textTertiary"
             app:endIconMode="password_toggle"
-            app:endIconTint="#64748B"
-            app:boxStrokeColor="#0284C7"
-            app:hintTextColor="#0284C7"
+            app:endIconTint="@color/textTertiary"
+            app:boxStrokeColor="@color/primary"
+            app:hintTextColor="@color/primary"
             android:layout_marginBottom="32dp"
             app:boxCornerRadiusTopStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
@@ -81,18 +81,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:textColor="#1E293B"/>
+                android:textColor="@color/textPrimary"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="48dp"
             android:text="Đăng nhập"
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="12dp"
-            android:backgroundTint="#0284C7"
+            android:backgroundTint="@color/primary"
             android:insetTop="0dp"
             android:insetBottom="0dp"/>
 
@@ -101,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="CHƯA CÓ TÀI KHOẢN? ĐĂNG KÝ NGAY"
-            android:textColor="#0284C7"
+            android:textColor="@color/primary"
             android:textSize="14sp"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_marginTop="16dp"/>

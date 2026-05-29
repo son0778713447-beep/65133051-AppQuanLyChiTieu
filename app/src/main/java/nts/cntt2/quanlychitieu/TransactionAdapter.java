@@ -10,11 +10,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
     private List<TransactionModel> list = new ArrayList<>();
+
+    private static final Map<String, String> categoryIcons = new HashMap<>();
+    static {
+        categoryIcons.put("Lương", "💼");
+        categoryIcons.put("Thưởng", "🏆");
+        categoryIcons.put("Đầu tư", "📈");
+        categoryIcons.put("Làm thêm", "🔧");
+        categoryIcons.put("Được tặng", "🎁");
+        categoryIcons.put("Ăn uống", "🍔");
+        categoryIcons.put("Đi lại", "🚗");
+        categoryIcons.put("Mua sắm", "🛍️");
+        categoryIcons.put("Tiền học", "📚");
+        categoryIcons.put("Giải trí", "🎮");
+        categoryIcons.put("Sức khỏe", "💊");
+        categoryIcons.put("Hóa đơn", "📄");
+        categoryIcons.put("Khác", "📦");
+    }
 
     public interface OnDeleteClickListener {
         void onDeleteClick(TransactionModel transaction);
@@ -52,16 +71,19 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             holder.tvItemDate.setText("");
         }
 
-        String formattedAmount = String.format("%,.0f", trans.getAmount()) + " VND";
+        String formattedAmount = String.format("%,.0f", trans.getAmount()) + " đ";
+
+        String icon = categoryIcons.get(trans.getCategory());
+        if (icon == null) icon = "📦";
 
         if ("INCOME".equals(trans.getType())) {
             holder.tvItemAmount.setText("+ " + formattedAmount);
             holder.tvItemAmount.setTextColor(android.graphics.Color.parseColor("#2E7D32"));
-            holder.tvItemIcon.setText("💰");
+            holder.tvItemIcon.setText(icon);
         } else {
             holder.tvItemAmount.setText("- " + formattedAmount);
             holder.tvItemAmount.setTextColor(android.graphics.Color.parseColor("#C62828"));
-            holder.tvItemIcon.setText("💸");
+            holder.tvItemIcon.setText(icon);
         }
 
         holder.btnDelete.setOnClickListener(v -> {

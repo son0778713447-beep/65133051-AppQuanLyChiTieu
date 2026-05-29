@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,9 +37,12 @@ public class CalendarFragment extends Fragment {
     private RecyclerView rvCalendarTransactions;
     private TextView tvSelectedDateTitle;
     private TextView tvDayIncome, tvDayExpense, tvDayBalance;
+    private TextView tvMonthDisplay;
+    private ImageButton btnPrevMonth, btnNextMonth;
     private TransactionAdapter calendarAdapter;
     private TransactionViewModel transactionViewModel;
     private LocalDate selectedDate;
+    private YearMonth currentMonth;
     private Set<LocalDate> transactionDates = new HashSet<>();
 
     private static class DayContainer extends ViewContainer {
@@ -64,22 +68,42 @@ public class CalendarFragment extends Fragment {
         tvDayIncome = view.findViewById(R.id.tvDayIncome);
         tvDayExpense = view.findViewById(R.id.tvDayExpense);
         tvDayBalance = view.findViewById(R.id.tvDayBalance);
+        tvMonthDisplay = view.findViewById(R.id.tvMonthDisplay);
+        btnPrevMonth = view.findViewById(R.id.btnPrevMonth);
+        btnNextMonth = view.findViewById(R.id.btnNextMonth);
 
         rvCalendarTransactions.setLayoutManager(new LinearLayoutManager(getContext()));
         calendarAdapter = new TransactionAdapter();
         rvCalendarTransactions.setAdapter(calendarAdapter);
 
+        calendarAdapter.setOnDeleteClickListener(transaction -> {
+            transactionViewModel.deleteTransaction(transaction);
+        });
+
         transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
 
         selectedDate = LocalDate.now();
+        currentMonth = YearMonth.now();
+        updateMonthDisplay();
 
-        YearMonth currentMonth = YearMonth.now();
         calendarView.setup(
                 currentMonth.minusMonths(12),
                 currentMonth.plusMonths(12),
                 DayOfWeek.MONDAY
         );
         calendarView.scrollToMonth(currentMonth);
+
+        btnPrevMonth.setOnClickListener(v -> {
+            currentMonth = currentMonth.minusMonths(1);
+            updateMonthDisplay();
+            calendarView.scrollToMonth(currentMonth);
+        });
+
+        btnNextMonth.setOnClickListener(v -> {
+            currentMonth = currentMonth.plusMonths(1);
+            updateMonthDisplay();
+            calendarView.scrollToMonth(currentMonth);
+        });
 
         calendarView.setDayBinder(new MonthDayBinder<DayContainer>() {
             @NonNull
@@ -187,5 +211,10 @@ public class CalendarFragment extends Fragment {
         double balance = totalIncome - totalExpense;
         String balanceSign = balance >= 0 ? "+ " : "";
         tvDayBalance.setText(balanceSign + String.format("%,.0fđ", balance));
+    }
+
+    private void updateMonthDisplay() {
+        String[] monthNames = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+        tvMonthDisplay.setText("Tháng " + monthNames[currentMonth.getMonthValue() - 1] + "/" + currentMonth.getYear());
     }
 }

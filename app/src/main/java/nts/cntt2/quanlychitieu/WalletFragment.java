@@ -142,7 +142,7 @@ public class WalletFragment extends Fragment {
         if (monthlyBudget > 0) {
             int percent = (int) ((totalExpense / monthlyBudget) * 100);
             pbBudget.setProgress(Math.min(percent, 100));
-            tvBudgetProgressText.setText(String.format("%,.0f", totalExpense) + " VND / " + String.format("%,.0f", monthlyBudget) + " VND");
+            tvBudgetProgressText.setText("Đã tiêu: " + String.format("%,.0f", totalExpense) + " VND / " + String.format("%,.0f", monthlyBudget) + " VND");
 
             if (percent >= 100) {
                 double overSpent = totalExpense - monthlyBudget;

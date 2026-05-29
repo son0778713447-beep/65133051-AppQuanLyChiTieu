@@ -146,7 +146,8 @@ public class ReportFragment extends Fragment {
         chart.setHoleRadius(35f);
         chart.setTransparentCircleRadius(40f);
         chart.setDrawEntryLabels(true);
-        chart.setCenterTextSize(14f);
+        chart.setCenterTextSize(16f);
+        chart.setCenterTextColor(Color.parseColor("#1A237E"));
         chart.setCenterText(type);
         chart.setDrawCenterText(true);
         chart.setEntryLabelColor(Color.BLACK);
@@ -156,11 +157,11 @@ public class ReportFragment extends Fragment {
 
     private void updateChartToggleButtons() {
         if (isShowingExpense) {
-            btnChartExpense.setTextColor(Color.parseColor("#C62828"));
-            btnChartIncome.setTextColor(Color.parseColor("#9E9E9E"));
+            btnChartExpense.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#1A237E")));
+            btnChartIncome.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
         } else {
-            btnChartExpense.setTextColor(Color.parseColor("#9E9E9E"));
-            btnChartIncome.setTextColor(Color.parseColor("#2E7D32"));
+            btnChartExpense.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+            btnChartIncome.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#1A237E")));
         }
     }
 

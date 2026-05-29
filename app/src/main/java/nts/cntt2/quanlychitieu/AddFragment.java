@@ -194,19 +194,19 @@ public class AddFragment extends Fragment {
         expenseBg.setCornerRadii(new float[]{4f, 4f, 24f, 24f, 24f, 24f, 4f, 4f});
 
         if (isIncome) {
-            incomeBg.setColor(android.graphics.Color.parseColor("#2E7D32"));
+            incomeBg.setColor(android.graphics.Color.parseColor("#1A237E"));
             btnIncomeToggle.setBackground(incomeBg);
             btnIncomeToggle.setTextColor(android.graphics.Color.WHITE);
-            expenseBg.setColor(android.graphics.Color.TRANSPARENT);
-            btnExpenseToggle.setBackground(expenseBg);
-            btnExpenseToggle.setTextColor(android.graphics.Color.parseColor("#757575"));
-        } else {
-            expenseBg.setColor(android.graphics.Color.parseColor("#D32F2F"));
+            expenseBg.setColor(android.graphics.Color.parseColor("#9E9E9E"));
             btnExpenseToggle.setBackground(expenseBg);
             btnExpenseToggle.setTextColor(android.graphics.Color.WHITE);
-            incomeBg.setColor(android.graphics.Color.TRANSPARENT);
+        } else {
+            expenseBg.setColor(android.graphics.Color.parseColor("#1A237E"));
+            btnExpenseToggle.setBackground(expenseBg);
+            btnExpenseToggle.setTextColor(android.graphics.Color.WHITE);
+            incomeBg.setColor(android.graphics.Color.parseColor("#9E9E9E"));
             btnIncomeToggle.setBackground(incomeBg);
-            btnIncomeToggle.setTextColor(android.graphics.Color.parseColor("#757575"));
+            btnIncomeToggle.setTextColor(android.graphics.Color.WHITE);
         }
     }
 
@@ -227,8 +227,7 @@ public class AddFragment extends Fragment {
             tvName.setText(item.name);
 
             GradientDrawable drawable = new GradientDrawable();
-            drawable.setShape(GradientDrawable.RECTANGLE);
-            drawable.setCornerRadius(12f);
+            drawable.setShape(GradientDrawable.OVAL);
             drawable.setColor(android.graphics.Color.parseColor(item.color));
 
             tvIcon.setBackground(drawable);
@@ -246,7 +245,7 @@ public class AddFragment extends Fragment {
             params.width = 0;
             params.height = GridLayout.LayoutParams.WRAP_CONTENT;
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-            params.setMargins(4, 4, 4, 4);
+            params.setMargins(8, 8, 8, 8);
             itemView.setLayoutParams(params);
 
             gridCategories.addView(itemView);
