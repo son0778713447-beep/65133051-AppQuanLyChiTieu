@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,14 +30,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AddFragment extends Fragment {
-    private RadioGroup rgType;
-    private RadioButton rbIncome;
+    private LinearLayout layoutTypeToggle;
+    private TextView btnIncomeToggle, btnExpenseToggle;
     private EditText etAmount, etNote, etDate;
     private Button btnSave;
     private GridLayout gridCategories;
     private TransactionViewModel transactionViewModel;
     private Runnable onTransactionSavedListener;
 
+    private boolean isIncome = true;
     private String selectedCategory = "";
     private View selectedCategoryView = null;
 
@@ -79,12 +78,13 @@ public class AddFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add, container, false);
 
-        rgType = view.findViewById(R.id.rgType);
-        rbIncome = view.findViewById(R.id.rbIncome);
         etAmount = view.findViewById(R.id.etAmount);
         etNote = view.findViewById(R.id.etNote);
         etDate = view.findViewById(R.id.etDate);
         btnSave = view.findViewById(R.id.btnSave);
+        layoutTypeToggle = view.findViewById(R.id.layoutTypeToggle);
+        btnIncomeToggle = view.findViewById(R.id.btnIncomeToggle);
+        btnExpenseToggle = view.findViewById(R.id.btnExpenseToggle);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         etDate.setText(dateFormat.format(new Date()));
@@ -108,11 +108,25 @@ public class AddFragment extends Fragment {
         });
         gridCategories = view.findViewById(R.id.gridCategories);
 
-        buildCategoryGrid(rbIncome.isChecked());
+        updateTypeToggleUI();
 
-        rgType.setOnCheckedChangeListener((group, checkedId) -> {
-            buildCategoryGrid(checkedId == R.id.rbIncome);
+        btnIncomeToggle.setOnClickListener(v -> {
+            if (!isIncome) {
+                isIncome = true;
+                updateTypeToggleUI();
+                buildCategoryGrid(true);
+            }
         });
+
+        btnExpenseToggle.setOnClickListener(v -> {
+            if (isIncome) {
+                isIncome = false;
+                updateTypeToggleUI();
+                buildCategoryGrid(false);
+            }
+        });
+
+        buildCategoryGrid(true);
 
         transactionViewModel = new ViewModelProvider(requireActivity()).get(TransactionViewModel.class);
 
@@ -126,7 +140,7 @@ public class AddFragment extends Fragment {
             }
 
             double amount = Double.parseDouble(amountStr);
-            String type = rbIncome.isChecked() ? "INCOME" : "EXPENSE";
+            String type = isIncome ? "INCOME" : "EXPENSE";
 
             if (type.equals("EXPENSE")) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -169,6 +183,31 @@ public class AddFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void updateTypeToggleUI() {
+        GradientDrawable incomeBg = new GradientDrawable();
+        incomeBg.setShape(GradientDrawable.RECTANGLE);
+        incomeBg.setCornerRadii(new float[]{24f, 24f, 4f, 4f, 4f, 4f, 24f, 24f});
+        GradientDrawable expenseBg = new GradientDrawable();
+        expenseBg.setShape(GradientDrawable.RECTANGLE);
+        expenseBg.setCornerRadii(new float[]{4f, 4f, 24f, 24f, 24f, 24f, 4f, 4f});
+
+        if (isIncome) {
+            incomeBg.setColor(android.graphics.Color.parseColor("#2E7D32"));
+            btnIncomeToggle.setBackground(incomeBg);
+            btnIncomeToggle.setTextColor(android.graphics.Color.WHITE);
+            expenseBg.setColor(android.graphics.Color.TRANSPARENT);
+            btnExpenseToggle.setBackground(expenseBg);
+            btnExpenseToggle.setTextColor(android.graphics.Color.parseColor("#757575"));
+        } else {
+            expenseBg.setColor(android.graphics.Color.parseColor("#D32F2F"));
+            btnExpenseToggle.setBackground(expenseBg);
+            btnExpenseToggle.setTextColor(android.graphics.Color.WHITE);
+            incomeBg.setColor(android.graphics.Color.TRANSPARENT);
+            btnIncomeToggle.setBackground(incomeBg);
+            btnIncomeToggle.setTextColor(android.graphics.Color.parseColor("#757575"));
+        }
     }
 
     private void buildCategoryGrid(boolean isIncome) {

@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Quản Lý Tài Chính"
+                android:text="Quản Lý Chi Tiêu"
                 android:textColor="#1A237E"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -79,12 +79,22 @@
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/tvBudgetProgressText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="0 VND / 0 VND"
+                android:textColor="#E0F2F1"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
             <ProgressBar
                 android:id="@+id/pbBudget"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_marginTop="14dp"
+                android:layout_height="10dp"
+                android:layout_marginTop="6dp"
                 android:max="100"
                 android:progress="0"
                 android:progressBackgroundTint="#4CAF50"

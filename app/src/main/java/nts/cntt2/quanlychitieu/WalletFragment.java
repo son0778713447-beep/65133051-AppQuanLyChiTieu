@@ -28,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 
 public class WalletFragment extends Fragment {
-    private TextView tvBalance, tvBudgetStatus, tvBudgetDisplay;
+    private TextView tvBalance, tvBudgetStatus, tvBudgetDisplay, tvBudgetProgressText;
     private Button btnEditBudget;
     private RecyclerView rvTransactions;
     private CardView cardWallet;
@@ -52,6 +52,7 @@ public class WalletFragment extends Fragment {
         rvTransactions = view.findViewById(R.id.rvTransactions);
         cardWallet = view.findViewById(R.id.cardWallet);
         pbBudget = view.findViewById(R.id.pbBudget);
+        tvBudgetProgressText = view.findViewById(R.id.tvBudgetProgressText);
 
         TextView tvLogout = view.findViewById(R.id.tvLogout);
         tvLogout.setOnClickListener(v -> {
@@ -141,6 +142,7 @@ public class WalletFragment extends Fragment {
         if (monthlyBudget > 0) {
             int percent = (int) ((totalExpense / monthlyBudget) * 100);
             pbBudget.setProgress(Math.min(percent, 100));
+            tvBudgetProgressText.setText(String.format("%,.0f", totalExpense) + " VND / " + String.format("%,.0f", monthlyBudget) + " VND");
 
             if (percent >= 100) {
                 double overSpent = totalExpense - monthlyBudget;
@@ -155,6 +157,7 @@ public class WalletFragment extends Fragment {
             }
         } else {
             pbBudget.setProgress(0);
+            tvBudgetProgressText.setText("Chưa có hạn mức tháng");
             tvBudgetStatus.setText("Chưa thiết lập hạn mức chi tiêu tháng.");
             cardWallet.setCardBackgroundColor(Color.parseColor("#2E7D32"));
         }

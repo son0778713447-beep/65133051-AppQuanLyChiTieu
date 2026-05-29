@@ -33,40 +33,59 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <RadioGroup
-                android:id="@+id/rgType"
+            <LinearLayout
+                android:id="@+id/layoutTypeToggle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_height="48dp"
                 android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/toggle_group_bg">
 
-                <RadioButton
-                    android:id="@+id/rbIncome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
+                <TextView
+                    android:id="@+id/btnIncomeToggle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="Thu nhập"
-                    android:textColor="#2E7D32"
-                    android:textSize="16sp"
-                    android:layout_marginEnd="32dp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="@drawable/toggle_left" />
 
-                <RadioButton
-                    android:id="@+id/rbExpense"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#BDBDBD" />
+
+                <TextView
+                    android:id="@+id/btnExpenseToggle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="Chi tiêu"
-                    android:textColor="#D32F2F"
-                    android:textSize="16sp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="@drawable/toggle_right" />
 
-            </RadioGroup>
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Ngày tháng"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                app:startIconDrawable="@drawable/ic_calendar"
+                app:boxStrokeColor="#1A237E"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:hintTextColor="#1A237E">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDate"
@@ -85,7 +104,12 @@
                 android:hint="Số tiền"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="16dp"
-                app:prefixText="₫ ">
+                app:startIconDrawable="@drawable/ic_money"
+                app:boxStrokeColor="#1A237E"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:hintTextColor="#1A237E"
+                app:suffixText=" VND">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAmount"
@@ -100,7 +124,12 @@
                 android:layout_height="wrap_content"
                 android:hint="Ghi chú"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="24dp"
+                app:startIconDrawable="@drawable/ic_note"
+                app:boxStrokeColor="#1A237E"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:hintTextColor="#1A237E">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNote"
@@ -133,7 +162,9 @@
                 android:text="Lưu giao dịch"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="12dp"
+                android:drawableStart="@android:drawable/ic_menu_save"
+                android:drawablePadding="8dp" />
 
         </LinearLayout>
 

@@ -34,7 +34,7 @@ public class ReportFragment extends Fragment {
     private ImageButton btnPrevPeriod, btnNextPeriod;
     private TextView tvPeriodDisplay;
     private Button btnMonthlyTab, btnYearlyTab;
-    private Button btnChartExpense, btnChartIncome;
+    private TextView btnChartExpense, btnChartIncome;
     private RecyclerView rvCategoryStats;
     private CategoryStatAdapter categoryStatAdapter;
 
@@ -143,23 +143,24 @@ public class ReportFragment extends Fragment {
     private void configurePieChart(PieChart chart, String type) {
         chart.setUsePercentValues(true);
         chart.getDescription().setEnabled(false);
-        chart.setHoleRadius(50f);
-        chart.setTransparentCircleRadius(55f);
+        chart.setHoleRadius(35f);
+        chart.setTransparentCircleRadius(40f);
         chart.setDrawEntryLabels(true);
-        chart.setEntryLabelTextSize(11f);
         chart.setCenterTextSize(14f);
         chart.setCenterText(type);
         chart.setDrawCenterText(true);
+        chart.setEntryLabelColor(Color.BLACK);
+        chart.setEntryLabelTextSize(12f);
         chart.animateY(500);
     }
 
     private void updateChartToggleButtons() {
         if (isShowingExpense) {
-            btnChartExpense.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#2E7D32")));
-            btnChartIncome.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
+            btnChartExpense.setTextColor(Color.parseColor("#C62828"));
+            btnChartIncome.setTextColor(Color.parseColor("#9E9E9E"));
         } else {
-            btnChartExpense.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#9E9E9E")));
-            btnChartIncome.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#2E7D32")));
+            btnChartExpense.setTextColor(Color.parseColor("#9E9E9E"));
+            btnChartIncome.setTextColor(Color.parseColor("#2E7D32"));
         }
     }
 
@@ -277,10 +278,19 @@ public class ReportFragment extends Fragment {
 
         PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setColors(colors);
-        dataSet.setValueTextSize(11f);
-        dataSet.setValueTextColor(Color.DKGRAY);
+        dataSet.setValueTextSize(13f);
+        dataSet.setValueTextColor(Color.parseColor("#1565C0"));
+        dataSet.setValueTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         dataSet.setSliceSpace(2f);
         dataSet.setSelectionShift(5f);
+        dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setValueLinePart1OffsetPercentage(60f);
+        dataSet.setValueLinePart1Length(0.55f);
+        dataSet.setValueLinePart2Length(0.15f);
+        dataSet.setValueLineColor(Color.DKGRAY);
+        dataSet.setValueLineWidth(2.5f);
+        dataSet.setValueLineVariableLength(false);
 
         PieData data = new PieData(dataSet);
         data.setValueFormatter(new ValueFormatter() {
