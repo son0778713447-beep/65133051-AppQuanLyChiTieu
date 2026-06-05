@@ -2,6 +2,9 @@
 project xây dựng app quản lý chi tiêu
 
 VIDEO demo ứng dụng quản lý chi tiêu: https://youtu.be/ED8yjYk9qbw
+
+FILE báo cáo word: [Thiết kế và xây dựng ứng dụng quản lý chi tiêu (3).docx](https://github.com/user-attachments/files/28636040/Thi.t.k.va.xay.d.ng.ng.d.ng.qu.n.ly.chi.tieu.3.docx)
+
 1. Giao diện đăng nhập
 <img width="509" height="880" alt="image" src="https://github.com/user-attachments/assets/292ecd91-22d3-46de-8789-9eb2b1399376" />
 
